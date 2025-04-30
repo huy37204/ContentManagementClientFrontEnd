@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
+
     if (token) {
       try {
         const decoded = jwtDecode<JwtPayload>(token);
@@ -29,23 +30,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setRole(decoded.role);
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem("access_token");
+          sessionStorage.removeItem("access_token");
         }
       } catch {
-        localStorage.removeItem("access_token");
+        sessionStorage.removeItem("access_token");
       }
     }
   }, []);
 
   const login = (token: string) => {
-    localStorage.setItem("access_token", token);
+    sessionStorage.setItem("access_token", token);
     const decoded = jwtDecode<JwtPayload>(token);
     setRole(decoded.role);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem("access_token");
+    sessionStorage.removeItem("access_token");
     setIsAuthenticated(false);
     setRole(null);
   };

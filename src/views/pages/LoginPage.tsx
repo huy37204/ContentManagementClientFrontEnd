@@ -16,6 +16,7 @@ export default function LoginPage() {
   const { login } = useAuth();
 
   const validate = (): boolean => {
+    setError("");
     const errs: { email?: string; password?: string } = {};
     if (!email.includes("@")) errs.email = "Invalid email address.";
     if (password.length < 6)
@@ -71,17 +72,19 @@ export default function LoginPage() {
               placeholder="Your password"
             />
           </div>
-          <button
-            onClick={handleLogin}
-            className="w-full bg-[#FD7A7E] py-2 rounded-2xl hover:opacity-90 transition"
-          >
-            <span className="font-bold text-white text-[16px] sm:text-[20px]">
-              Login
-            </span>
-          </button>
-          {error && (
-            <p className="text-red-500 text-center font-bold">{error}</p>
-          )}
+          <div className="w-full flex flex-col gap-4">
+            {error && (
+              <p className="text-red-500 text-center font-bold">{error}</p>
+            )}
+            <button
+              onClick={handleLogin}
+              className="w-full bg-[#FD7A7E] py-2 rounded-2xl hover:opacity-90 transition"
+            >
+              <span className="font-bold text-white text-[16px] sm:text-[20px]">
+                Login
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

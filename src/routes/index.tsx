@@ -9,7 +9,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
 
       {/* <Route
-        path="/client/*"
+        path="/*"
         element={
           <ProtectedRoute allowedRoles={["client"]}>
             <ClientPage />
