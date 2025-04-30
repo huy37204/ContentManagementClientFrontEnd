@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { loginApi } from "../../src/services/authApi";
-import { useAuth } from "../../src/contexts/AuthContext";
-import login_img from "../../src/assets/imgs/login_img.png";
-import login_gif from "../../src/assets/videos/login_gif.mp4";
+import { loginApi } from "../../services/authApi";
+import { useAuth } from "../../contexts/AuthContext";
+import login_img from "../../assets/imgs/login_img.png";
+import login_gif from "../../assets/videos/login_gif.mp4";
 import InputField from "../components/InputField";
 
 export default function LoginPage() {
@@ -32,7 +32,7 @@ export default function LoginPage() {
       setError(result.error);
     } else {
       login(result.data.access_token);
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     }
   };
 

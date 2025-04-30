@@ -1,6 +1,6 @@
 // src/routes/index.tsx
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "../../views/pages/LoginPage";
+import LoginPage from "../views/pages/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
