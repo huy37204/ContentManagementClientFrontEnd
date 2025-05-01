@@ -4,8 +4,9 @@ import { useAuth } from "../../contexts/AuthContext";
 import login_img from "../../assets/imgs/login_img.png";
 import login_gif from "../../assets/videos/login_gif.mp4";
 import InputField from "../components/InputField";
+import { useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,6 +15,7 @@ export default function LoginPage() {
     password?: string;
   }>({});
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validate = (): boolean => {
     setError("");
@@ -33,12 +35,15 @@ export default function LoginPage() {
       setError(result.error);
     } else {
       login(result.data.access_token);
-      window.location.href = "/";
+
+      setTimeout(() => {
+        navigate("/");
+      }, 0);
     }
   };
 
   return (
-    <div className="relative w-full h-[100vh] p-4 flex items-center justify-center  overflow-auto">
+    <div className="relative w-full min-h-[100vh] p-4 flex items-center justify-center  overflow-auto">
       <video
         autoPlay
         loop
@@ -89,4 +94,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

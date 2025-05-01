@@ -14,5 +14,5 @@ export const handleApiError = (error: any): string => {
     return error.response.data.title;
   }
 
-  return "Đã xảy ra lỗi không xác định.";
+  return "An unknown error occured";
 };
