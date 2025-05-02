@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { IContent } from "../../../interfaces/content";
 import { format } from "date-fns";
 
@@ -6,6 +7,7 @@ interface ContentListProps {
 }
 
 const ContentList: React.FC<ContentListProps> = ({ contents }) => {
+  const navigate = useNavigate();
   const mediaClass =
     "w-[150px] lg:w-[200px] aspect-square object-cover rounded-2xl";
 
@@ -23,9 +25,12 @@ const ContentList: React.FC<ContentListProps> = ({ contents }) => {
           <div
             key={content._id}
             className="w-full flex items-center justify-between gap-4 p-4 rounded-2xl border border-black max-w-[1811px] mx-auto shadow-md hover:opacity-70 cursor-pointer trasition-all ease-in-out duration-300"
+            onClick={() => {
+              navigate(`contents/${content._id}`);
+            }}
           >
             {/* Title & Info */}
-            <div>
+            <div className="w-[60%]">
               <h1 className="text-[17px] sm:text-[30px] lg:text-[40px] font-bold">
                 {content.title}
               </h1>
@@ -35,13 +40,23 @@ const ContentList: React.FC<ContentListProps> = ({ contents }) => {
                 </span>
                 <span className="text-[#747474] text-[10px] sm:text-[14px]">
                   Updated at:{" "}
-                  {format(new Date(content.updatedAt), "HH:mm, dd/MM/yyyy")}
+                  {(() => {
+                    console.log("🧪 content.updatedAt:", content.updatedAt);
+
+                    const parsed = new Date(content.updatedAt);
+                    if (isNaN(parsed.getTime())) {
+                      console.warn("❌ Invalid date detected:", content);
+                      return "Invalid date";
+                    }
+
+                    return format(parsed, "HH:mm:ss a, dd/MM/yyyy");
+                  })()}
                 </span>
               </div>
             </div>
 
             {/* Image + Video preview thumbnails */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 w-[40%]">
               {firstThree.map((block, idx) =>
                 block.type === "image" ? (
                   <img
