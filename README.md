@@ -32,7 +32,7 @@ This is the **client-facing frontend** of the Content Management System, built w
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/client-frontend.git
+git clone https://github.com/huy37204/ContentManagementClientFrontEnd.git
 ```
 
 ### 2. Install dependencies
@@ -104,5 +104,3 @@ Watch the demo video here:
 Tran Nhat Huy
 
 Email: huy37204@gmail.com
-
-<!-- Test -->
