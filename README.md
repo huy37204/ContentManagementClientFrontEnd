@@ -65,6 +65,35 @@ All requests requiring authentication should include the Bearer token in headers
 
 Login is required to unlock certain features (e.g., private content, user info).
 
+### 🛠 Workflow File: `.github/workflows/client-ci.yml`
+
+```yaml
+name: Client Frontend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build
+```
+
 ## 📹 Video Demo
 
 Watch the demo video here:  
