@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginApi } from "../../services/authApi";
+import { loginApi } from "../../services/loginApi";
 import { useAuth } from "../../contexts/AuthContext";
 import login_img from "../../assets/imgs/login_img.png";
 import login_gif from "../../assets/videos/login_gif.mp4";
@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full min-h-[100vh] p-4 flex items-center justify-center  overflow-auto">
+    <div className="relative w-full min-h-[100vh] min-w-[375px] p-4 flex items-center justify-center  overflow-auto">
       <video
         autoPlay
         loop

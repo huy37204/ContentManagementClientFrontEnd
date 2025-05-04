@@ -1,18 +1,26 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { IContent } from "../../interfaces/content";
-import { findContentById } from "../../services/Content/findContentById";
 import { format, isValid } from "date-fns";
-import Modal from "../components/Modal";
+import { io } from "socket.io-client";
+
+import { IContent } from "../../interfaces/content";
 import { IBlock } from "../../interfaces/block";
+import { findContentById } from "../../services/Content/findContentById";
+
+import Modal from "../components/Modal";
 
 const getResponsiveColCount = (width: number): number => {
-  if (width < 640) return 1; // mobile
-  if (width < 768) return 2; // sm
-  if (width < 1024) return 3; // md
-  if (width < 1280) return 4; // lg
-  return 5; // xl+
+  if (width < 640) return 1;
+  if (width < 768) return 2;
+  if (width < 1024) return 3;
+  if (width < 1280) return 4;
+  return 5;
 };
+
+const formatDate = (date: Date | string | null): string =>
+  isValid(date as Date)
+    ? format(new Date(date!), "hh:mm:ss a, dd/MM/yyyy")
+    : "Invalid date";
 
 const ContentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,31 +35,63 @@ const ContentDetailPage = () => {
     getResponsiveColCount(window.innerWidth)
   );
 
-  useEffect(() => {
-    if (id) {
-      findContentById(id).then((res) => {
-        if ("data" in res) {
-          const parsed = {
-            ...res.data,
-            createdAt: new Date(res.data.createdAt),
-            updatedAt: new Date(res.data.updatedAt),
-          };
-          setContent(parsed);
-        }
-      });
+  const handleFetchContent = useCallback(async () => {
+    if (!id) return;
+    const res = await findContentById(id);
+    if ("data" in res) {
+      const parsed = {
+        ...res.data,
+        createdAt: new Date(res.data.createdAt),
+        updatedAt: new Date(res.data.updatedAt),
+      };
+      setContent(parsed);
     }
+  }, [id]);
 
+  useEffect(() => {
+    handleFetchContent();
+
+    const socket = io(import.meta.env.VITE_SOCKET_URL, {
+      transports: ["websocket"],
+      path: "/socket.io",
+    });
+
+    socket.on("connect", () => {
+      console.log("✅ Socket connected:", socket.id);
+    });
+
+    socket.on("new_content", (newContent: IContent) => {
+      if (newContent._id === id) {
+        setContent({
+          ...newContent,
+          createdAt: new Date(newContent.createdAt),
+          updatedAt: new Date(newContent.updatedAt),
+        });
+      }
+    });
+
+    socket.on("hide_content", (payload: { id: string }) => {
+      if (payload.id === id) {
+        setContent(null);
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [id, handleFetchContent]);
+
+  useEffect(() => {
     const handleResize = () => {
       setColCount(getResponsiveColCount(window.innerWidth));
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [id]);
+  }, []);
 
   const columns = useMemo(() => {
     if (!content) return [];
-
     const cols: { block: IBlock; realIndex: number }[][] = Array.from(
       { length: colCount },
       () => []
@@ -64,14 +104,6 @@ const ContentDetailPage = () => {
 
   if (!content) return null;
 
-  const createdAtStr = isValid(content.createdAt)
-    ? format(content.createdAt, "hh:mm:ss a, dd/MM/yyyy")
-    : "Invalid date";
-
-  const updatedAtStr = isValid(content.updatedAt)
-    ? format(content.updatedAt, "hh:mm:ss a, dd/MM/yyyy")
-    : "Invalid date";
-
   return (
     <div className="w-full min-w-[375px] px-6 sm:px-8 md:px-12 lg:px-16">
       <div className="w-full mt-10">
@@ -80,12 +112,12 @@ const ContentDetailPage = () => {
         </h1>
         <div className="text-gray-600 text-center mb-8">
           <p>🧑‍💻 Created by: {content.createdBy?.name || "Unknown"}</p>
-          <p>🕒 Created at: {createdAtStr}</p>
+          <p>🕒 Created at: {formatDate(content.createdAt)}</p>
           <p>✏️ Updated by: {content.updatedBy?.name || "Unknown"}</p>
-          <p>🕒 Updated at: {updatedAtStr}</p>
+          <p>🕒 Updated at: {formatDate(content.updatedAt)}</p>
         </div>
+        <hr className="h-1 bg-[#FD7A7E] mb-4 flex mx-auto w-[50%]" />
 
-        {/* Flex Column Responsive Layout */}
         <div className="flex gap-4">
           {columns.map((blocks, colIdx) => (
             <div key={colIdx} className="flex flex-col w-full">
@@ -131,7 +163,7 @@ const ContentDetailPage = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal for paragraph preview */}
       <Modal
         isOpen={selectedBlockIndex !== null && selectedHeadingIndex !== null}
         onClose={() => {
@@ -141,7 +173,6 @@ const ContentDetailPage = () => {
       >
         {selectedBlockIndex !== null &&
           selectedHeadingIndex !== null &&
-          content.blocks[selectedBlockIndex] &&
           content.blocks[selectedBlockIndex].type === "text" && (
             <div>
               <h2 className="text-xl font-bold mb-2 text-center">

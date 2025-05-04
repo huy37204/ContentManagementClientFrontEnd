@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     handleFindAllContent();
 
-    const socket = io("http://localhost:3000", {
+    const socket = io(import.meta.env.VITE_SOCKET_URL, {
       transports: ["websocket"],
       path: "/socket.io",
     });
@@ -45,8 +45,25 @@ const HomePage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const socket = io(import.meta.env.VITE_SOCKET_URL, {
+      transports: ["websocket"],
+      path: "/socket.io",
+    });
+
+    socket.on("hide_content", (payload: { id: string }) => {
+      setContents((prev) =>
+        prev ? prev.filter((c) => c._id !== payload.id) : null
+      );
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="w-full min-w-[375px] overflow-auto">
+    <div className="w-full min-w-[375px] overflow-auto ">
       <IntroductionFrame />
       <ContentList contents={contents} />
     </div>

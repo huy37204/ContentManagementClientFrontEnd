@@ -1,31 +1,19 @@
 // src/routes/index.tsx
 import { Routes, Route } from "react-router-dom";
 import LoginPage from "../views/pages/LoginPage";
-import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../views/pages/HomePage";
 import ContentDetailPage from "../views/pages/ContentDetailPage";
+import MainLayout from "../views/layouts/MainLayout";
 
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
 
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute allowedRoles={["client"]}>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/contents/:id"
-        element={
-          <ProtectedRoute allowedRoles={["client"]}>
-            <ContentDetailPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<MainLayout allowedRoles={["client"]} />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/contents/:id" element={<ContentDetailPage />} />
+      </Route>
 
       <Route
         path="/unauthorized"

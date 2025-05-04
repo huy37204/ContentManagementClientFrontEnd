@@ -1,3 +1,4 @@
+import { Status } from "../enums/Status";
 import { IBlock } from "./block";
 import { IUser } from "./user";
 
@@ -9,4 +10,5 @@ export interface IContent {
   updatedBy: IUser;
   createdAt: Date;
   updatedAt: Date;
+  status: Status;
 }

@@ -81,7 +81,7 @@ const ContentList: React.FC<ContentListProps> = ({ contents }) => {
               )}
 
               {mediaBlocks.length >= 4 ? (
-                <div className="relative">
+                <div className="relative w-fit h-fit">
                   {mediaBlocks[3].type === "image" ? (
                     <img
                       className={mediaClass}

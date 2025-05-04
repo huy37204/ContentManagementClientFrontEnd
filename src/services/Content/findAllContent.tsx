@@ -6,7 +6,7 @@ export const findAllContent = async (): Promise<
   { data: IContent[] } | { error: string }
 > => {
   try {
-    const response = await axiosClient.get("/contents");
+    const response = await axiosClient.get("/contents/publish");
     return { data: response.data };
   } catch (error) {
     console.error("Error finding all contents:", error);
