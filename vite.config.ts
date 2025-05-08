@@ -12,7 +12,7 @@ export default defineConfig({
     },
     proxy: {
       "/socket.io": {
-        target: "http://localhost:3000",
+        target: "http://huytran3.workspace.opstech.org:8080",
         ws: true,
         changeOrigin: true, // Thay đổi origin header
       },
