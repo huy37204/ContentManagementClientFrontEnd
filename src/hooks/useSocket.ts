@@ -4,7 +4,7 @@ import { IContent } from "../interfaces/content";
 
 export const useContentSocket = (onNewContent: (content: IContent) => void) => {
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io("http://http://huytran3.workspace.opstech.org:3000", {
       transports: ["websocket"],
     });
 
