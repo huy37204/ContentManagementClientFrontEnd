@@ -12,7 +12,7 @@ const IntroductionFrame: React.FC = () => {
           </span>
         </div>
         <h1 className="font-bold text-[30px] sm:text-[70px] 2xl:text-[100px] whitespace-normal">
-          Explore your modern stylee.
+          Explore your modern style.
         </h1>
         <hr className="w-full h-1 bg-gray-300" />
         {/* Rate frame */}
